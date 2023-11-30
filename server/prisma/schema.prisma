@@ -1,0 +1,43 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @unique @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  username String
+  pwdHash  String
+
+  email     String? @unique
+  firstName String?
+  lastName  String?
+
+  recipes Recipe[]
+
+  @@map("users")
+}
+
+model Recipe {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  title        String
+  category     String
+  cuisine      String
+  instructions String
+  keywords     String[]
+  image        String // This will come from AWS S3
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+
+  @@map("recipes")
+}

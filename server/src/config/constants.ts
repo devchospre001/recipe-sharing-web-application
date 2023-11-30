@@ -1,0 +1,12 @@
+export const jwtConstants = {
+  secret: 'somephenomenalphrase',
+};
+
+/*
+ *** WARNING ***
+ ** DO NOT EXPOSE THIS KEY PUBLICLY **
+ ** IN A PRODUCTION SYSTEM YOU MUST PROTECT THIS KEY **
+ ** USING APPROPRIATE MEASURES SUCH AS **
+ ** SECRETS VAULT, ENVIRONMENT VARIABLES OR CONFIGURATION SERVICE **
+ *** WARNING ***
+ */
