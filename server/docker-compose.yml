@@ -1,0 +1,14 @@
+version: '3.8'
+services:
+  recipe-sharing-web-app-db:
+    image: postgres:13
+    ports:
+      - 8000:5432
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: kerchiez1921!
+      POSTGRES_DB: recipes
+    networks:
+      - thespreco
+networks:
+  thespreco:
