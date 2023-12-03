@@ -10,14 +10,14 @@ export class SignupUserDto {
   password: string;
 
   @IsEmail()
-  email: string;
+  email?: string;
 
-  @IsOptional()
   @IsString()
+  @IsOptional()
   firstName?: string;
 
-  @IsOptional()
   @IsString()
+  @IsOptional()
   lastName?: string;
 }
 
