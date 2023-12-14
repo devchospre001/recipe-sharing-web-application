@@ -2,16 +2,27 @@ import { ForbiddenException, Injectable } from '@nestjs/common';
 
 import { CreateRecipeDto, EditRecipeDto } from './dto';
 import { PrismaService } from '../prisma/prisma.service';
+import { AWSService } from '../aws/aws.service';
 
 // TODO: Add assertions for every method in RecipesService class.
 
 @Injectable()
 export class RecipesService {
-  constructor(private prismaService: PrismaService) {}
+  constructor(
+    private awsService: AWSService,
+    private prismaService: PrismaService,
+  ) {}
 
-  async createRecipe(userId: number, recipeDto: CreateRecipeDto) {
-    const { title, category, cuisine, instructions, keywords, image } =
-      recipeDto;
+  async createRecipe(
+    userId: number,
+    recipeDto: CreateRecipeDto,
+    file: Express.Multer.File,
+  ) {
+    const { title, category, cuisine, instructions, keywords } = recipeDto;
+
+    const image = await this.awsService.uploadFile(file);
+    const imageLocation = image.Location;
+
     const recipe = await this.prismaService.recipe.create({
       data: {
         title,
@@ -19,7 +30,7 @@ export class RecipesService {
         cuisine,
         instructions,
         keywords,
-        image,
+        image: imageLocation ?? null,
         userId,
       },
     });
@@ -36,7 +47,11 @@ export class RecipesService {
     });
   }
 
-  async getRecipes(userId: number) {
+  async getRecipesForAllUsers() {
+    return await this.prismaService.recipe.findMany();
+  }
+
+  async getRecipesForUser(userId: number) {
     return await this.prismaService.recipe.findMany({
       where: {
         userId,

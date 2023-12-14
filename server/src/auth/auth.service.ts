@@ -4,13 +4,11 @@ import { JwtService } from '@nestjs/jwt';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 import { SigninUserDto, SignupUserDto } from './dto';
-import { UsersService } from '../users/users.service';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private usersService: UsersService,
     private jwtService: JwtService,
     private prismaService: PrismaService,
   ) {}

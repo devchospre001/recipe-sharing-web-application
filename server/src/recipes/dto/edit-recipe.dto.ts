@@ -1,4 +1,4 @@
-import { IsArray, IsOptional, IsString } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 
 export class EditRecipeDto {
   @IsString()
@@ -17,9 +17,9 @@ export class EditRecipeDto {
   @IsOptional()
   instructions?: string;
 
-  @IsArray()
+  @IsString()
   @IsOptional()
-  keywords?: Array<string>;
+  keywords?: string;
 
   @IsString()
   @IsOptional()

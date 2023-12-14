@@ -7,8 +7,11 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 import { RecipesService } from './recipes.service';
 import { CreateRecipeDto, EditRecipeDto } from './dto';
@@ -21,8 +24,13 @@ export class RecipesController {
   constructor(private recipesService: RecipesService) {}
 
   @Get()
-  async getRecipes(@GetUser('id') userId: number) {
-    return this.recipesService.getRecipes(userId);
+  async getRecipesForAllUsers() {
+    return this.recipesService.getRecipesForAllUsers();
+  }
+
+  @Get('my-recipes')
+  async getRecipesForUser(@GetUser('id') userId: number) {
+    return this.recipesService.getRecipesForUser(userId);
   }
 
   @Get('recipe/:id')
@@ -34,11 +42,13 @@ export class RecipesController {
   }
 
   @Post('recipe/new')
+  @UseInterceptors(FileInterceptor('image'))
   createRecipe(
     @GetUser('id') userId: number,
     @Body() recipeDto: CreateRecipeDto,
+    @UploadedFile() file: Express.Multer.File,
   ) {
-    return this.recipesService.createRecipe(userId, recipeDto);
+    return this.recipesService.createRecipe(userId, recipeDto, file);
   }
 
   @Patch('recipe/:id')

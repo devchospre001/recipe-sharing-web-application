@@ -1,10 +1,17 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import App from './App.tsx'
-import './index.css'
+import React from "react";
+import ReactDOM from "react-dom/client";
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
+import { ThemeProvider } from "./context/theme-provider.tsx";
+import Router from "./routes/routes-config.tsx";
+import AuthContextProvider from "./context/auth-provider.tsx";
+import "./index.css";
+
+ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-)
+    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+      <AuthContextProvider>
+        <Router />
+      </AuthContextProvider>
+    </ThemeProvider>
+  </React.StrictMode>
+);
