@@ -7,6 +7,9 @@ import ErrorPage from "../pages/Error";
 import { Signin } from "../pages/Sign-in";
 import { Signup } from "../pages/Sign-up";
 import { useAuth } from "../hooks/useAuth";
+import MyRecipes from "@/pages/MyRecipes";
+import { Settings } from "@/pages/Settings";
+import MyProfile from "@/pages/MyProfile";
 
 const Routes = () => {
   const { token } = useAuth();
@@ -26,15 +29,15 @@ const Routes = () => {
         },
         {
           path: routePaths.MY_PROFILE,
-          element: <div>Profile</div>,
+          element: <MyProfile />,
         },
         {
           path: routePaths.SETTINGS,
-          element: <div>Settings</div>,
+          element: <Settings />,
         },
         {
           path: routePaths.MY_RECIPES,
-          element: <div>My Recipes</div>,
+          element: <MyRecipes />,
         },
       ],
     },

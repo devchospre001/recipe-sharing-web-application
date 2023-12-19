@@ -10,9 +10,25 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useAuth } from "@/hooks/useAuth";
 
-const components: { title: string; href: string; description: string }[] = [
+const components: {
+  title: string;
+  href?: string;
+  description: string;
+}[] = [
   {
     title: "My recipes",
     href: "/my-recipes",
@@ -30,16 +46,10 @@ const components: { title: string; href: string; description: string }[] = [
     description:
       "A set of layered sections of content—known as tab panels—that are displayed one at a time.",
   },
-  {
-    title: "Logout",
-    href: "/logout",
-    description:
-      "A popup that displays information related to an element when the element receives keyboard focus or the mouse hovers over it.",
-  },
 ];
 
 export function NavMenu() {
-  const { token } = useAuth();
+  const { token, setTokenKey } = useAuth();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const user = jwtDecode(token!) as any;
   return (
@@ -59,24 +69,122 @@ export function NavMenu() {
                       {user.username}
                     </div>
                     <p className="text-sm leading-tight text-muted-foreground">
-                      Beautifully designed components built with Radix UI and
-                      Tailwind CSS.
+                      Welcome to Recipes, {user.username.toUpperCase()}
                     </p>
                   </a>
                 </NavigationMenuLink>
               </li>
-              <ListItem href="/docs" title="Recipes Feed">
-                Re-usable components built using Radix UI and Tailwind CSS.
+              <ListItem href="/feed" title="Recipes Feed">
+                See recipes from all chefs in a single click
               </ListItem>
-              <ListItem title="Publish a recipe">
-                Styles for headings, paragraphs, lists...etc
-              </ListItem>
-              <ListItem
-                href="/docs/primitives/typography"
-                title="Update a recipe"
-              >
-                Styles for headings, paragraphs, lists...etc
-              </ListItem>
+              <li>
+                <NavigationMenuLink asChild>
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <a
+                        className={cn(
+                          "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                        )}
+                      >
+                        <div className="text-sm font-medium leading-none">
+                          Publish a Recipe
+                        </div>
+                        <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                          Be a Chef! Publish a Recipe!
+                        </p>
+                      </a>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-[425px]">
+                      <DialogHeader>
+                        <DialogTitle>Publish a Recipe</DialogTitle>
+                        <DialogDescription>
+                          Be a Chef! Publish a recipe
+                        </DialogDescription>
+                      </DialogHeader>
+                      <div className="grid gap-4 py-4">
+                        <div className="grid grid-cols-4 items-center gap-4">
+                          <Label htmlFor="name" className="text-right">
+                            Name
+                          </Label>
+                          <Input
+                            id="name"
+                            defaultValue="Pedro Duarte"
+                            className="col-span-3"
+                          />
+                        </div>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                          <Label htmlFor="username" className="text-right">
+                            Username
+                          </Label>
+                          <Input
+                            id="username"
+                            defaultValue="@peduarte"
+                            className="col-span-3"
+                          />
+                        </div>
+                      </div>
+                      <DialogFooter>
+                        <Button type="submit">Save changes</Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                </NavigationMenuLink>
+              </li>
+              <li>
+                <NavigationMenuLink asChild>
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <a
+                        className={cn(
+                          "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                        )}
+                      >
+                        <div className="text-sm font-medium leading-none">
+                          Update an existing Recipe
+                        </div>
+                        <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                          Found out better ingredients for your Recipe? Update
+                          it now!{" "}
+                        </p>
+                      </a>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-[425px]">
+                      <DialogHeader>
+                        <DialogTitle>Update an existing recipe</DialogTitle>
+                        <DialogDescription>
+                          Found out better ingredients for your Recipe? Update
+                          it now!
+                        </DialogDescription>
+                      </DialogHeader>
+                      <div className="grid gap-4 py-4">
+                        <div className="grid grid-cols-4 items-center gap-4">
+                          <Label htmlFor="name" className="text-right">
+                            Name
+                          </Label>
+                          <Input
+                            id="name"
+                            defaultValue="Pedro Duarte"
+                            className="col-span-3"
+                          />
+                        </div>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                          <Label htmlFor="username" className="text-right">
+                            Username
+                          </Label>
+                          <Input
+                            id="username"
+                            defaultValue="@peduarte"
+                            className="col-span-3"
+                          />
+                        </div>
+                      </div>
+                      <DialogFooter>
+                        <Button type="submit">Save changes</Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                </NavigationMenuLink>
+              </li>
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>
@@ -93,6 +201,14 @@ export function NavMenu() {
                   {component.description}
                 </ListItem>
               ))}
+              <ListItem
+                key={Math.random() * 1024 ** 2}
+                title="Logout"
+                href="/"
+                onClick={() => setTokenKey("")}
+              >
+                Log out from this account in just one click
+              </ListItem>
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>

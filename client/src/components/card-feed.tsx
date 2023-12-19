@@ -18,8 +18,8 @@ export function CardFeed(props: TRecipe) {
         </div>
       </CardHeader>
       <CardContent>
-        <div className="flex items-center justify-center w-max-content h-[400px] object-fit m-auto space-x-4 text-sm text-muted-foreground mb-3">
-          <img src={props.image} />
+        <div className="flex items-center justify-center w-[600px] h-[400px] object-fit m-auto space-x-4 text-sm text-muted-foreground mb-3">
+          <img width={600} height={1} src={props.image} />
         </div>
         <div className="flex xs:flex-col sm:flex-col md:flex-row lg:flex-row justify-center items-center space-x-4 xl:flex-row text-sm text-muted-foreground">
           <div className="flex items-center">

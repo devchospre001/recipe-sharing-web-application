@@ -10,7 +10,6 @@ import { endpoints } from "@/api/config";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
 import { Toaster } from "@/components/ui/toaster";
-import { PublishRecipeDialog } from "@/components/publish-a-recipe.dialog";
 
 const Feed = () => {
   const [loading, setLoading] = useState(true);
@@ -73,7 +72,6 @@ const Feed = () => {
         ) : (
           <Spinner />
         )}
-        <PublishRecipeDialog />
       </CardContent>
     </Card>
   );
