@@ -1,16 +1,4 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  ParseIntPipe,
-  Patch,
-  Post,
-  UploadedFile,
-  UseGuards,
-  UseInterceptors,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 
 import { RecipesService } from './recipes.service';
@@ -34,10 +22,7 @@ export class RecipesController {
   }
 
   @Get('recipe/:id')
-  getRecipeById(
-    @GetUser('id') userId: number,
-    @Param('id', ParseIntPipe) recipeId: number,
-  ) {
+  getRecipeById(@GetUser('id') userId: number, @Param('id', ParseIntPipe) recipeId: number) {
     return this.recipesService.getRecipeById(userId, recipeId);
   }
 
@@ -46,25 +31,18 @@ export class RecipesController {
   createRecipe(
     @GetUser('id') userId: number,
     @Body() recipeDto: CreateRecipeDto,
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFile() file: Express.Multer.File, // change to single
   ) {
     return this.recipesService.createRecipe(userId, recipeDto, file);
   }
 
   @Patch('recipe/:id')
-  updateRecipe(
-    @GetUser('id') userId: number,
-    @Param('id', ParseIntPipe) recipeId: number,
-    @Body() recipeDto: EditRecipeDto,
-  ) {
+  updateRecipe(@GetUser('id') userId: number, @Param('id', ParseIntPipe) recipeId: number, @Body() recipeDto: EditRecipeDto) {
     return this.recipesService.updateRecipe(userId, recipeId, recipeDto);
   }
 
   @Delete('recipe/:id')
-  deleteRecipe(
-    @GetUser('id') userId: number,
-    @Param('id', ParseIntPipe) recipeId: number,
-  ) {
+  deleteRecipe(@GetUser('id') userId: number, @Param('id', ParseIntPipe) recipeId: number) {
     return this.recipesService.deleteRecipeById(userId, recipeId);
   }
 }

@@ -12,7 +12,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { ModeToggle } from "@/components/mode-toggle";
+import { ModeToggle } from "@/components/ModeToggle";
 import { useToast } from "@/components/ui/use-toast";
 import { TErrorData } from "@/types";
 import { Toaster } from "@/components/ui/toaster";
@@ -43,8 +43,10 @@ export function Signin() {
         duration: 3000,
       });
 
+      console.log(data);
+
       setTimeout(() => {
-        setTokenKey(data);
+        setTokenKey(data.accessToken);
         navigate("/", { replace: true });
         toast({
           title: "Successful",

@@ -29,9 +29,7 @@ export class AuthService {
 
       return this.signin(userDto);
     } catch (error) {
-      if (error instanceof PrismaClientKnownRequestError)
-        if (error.code === 'P2002')
-          throw new ForbiddenException('User already exists');
+      if (error instanceof PrismaClientKnownRequestError) if (error.code === 'P2002') throw new ForbiddenException('User already exists');
       throw error;
     }
   }
@@ -48,14 +46,29 @@ export class AuthService {
 
     const pwdMatched = await argon.verify(user.pwdHash, password);
 
-    if (!pwdMatched)
-      throw new ForbiddenException('Incorrect username or password');
+    if (!pwdMatched) throw new ForbiddenException('Incorrect username or password');
 
-    return this.signToken(user.id, user.username);
+    const accessToken = await this.signToken(user.id, user.username);
+    const refreshToken = await this.refreshToken({
+      userId: user.id,
+      username: user.username,
+    });
+
+    return {
+      accessToken,
+      refreshToken,
+    };
+  }
+
+  public async refreshToken(user: { userId: number; username: string }): Promise<string> {
+    const { userId, username } = user;
+    const payload = { sub: userId, username };
+
+    return this.jwtService.signAsync(payload, { expiresIn: '7d' });
   }
 
   private async signToken(userId: number, username: string): Promise<string> {
     const payload = { sub: userId, username };
-    return this.jwtService.signAsync(payload);
+    return this.jwtService.signAsync(payload, { expiresIn: '9999999s' });
   }
 }

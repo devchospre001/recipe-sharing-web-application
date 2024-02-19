@@ -13,7 +13,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { ModeToggle } from "@/components/mode-toggle";
+import { ModeToggle } from "@/components/ModeToggle";
 import { useToast } from "@/components/ui/use-toast";
 import { Toaster } from "@/components/ui/toaster";
 import { useAuth } from "@/hooks/useAuth";
@@ -44,12 +44,12 @@ export function Signup() {
       });
 
       setTimeout(() => {
-        setTokenKey(data);
+        setTokenKey(data.accessToken);
         navigate("/", { replace: true });
         toast({
           title: "Success",
           description: "You have successfully created an account",
-          duration: 3000, // see why this is not showing
+          duration: 3000,
         });
       }, 3000);
     } catch (error) {

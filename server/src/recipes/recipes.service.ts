@@ -4,8 +4,6 @@ import { CreateRecipeDto, EditRecipeDto } from './dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { AWSService } from '../aws/aws.service';
 
-// TODO: Add assertions for every method in RecipesService class.
-
 @Injectable()
 export class RecipesService {
   constructor(
@@ -13,11 +11,7 @@ export class RecipesService {
     private prismaService: PrismaService,
   ) {}
 
-  async createRecipe(
-    userId: number,
-    recipeDto: CreateRecipeDto,
-    file: Express.Multer.File,
-  ) {
+  async createRecipe(userId: number, recipeDto: CreateRecipeDto, file: Express.Multer.File) {
     const { title, category, cuisine, instructions, keywords } = recipeDto;
 
     const image = await this.awsService.uploadFile(file);
@@ -39,7 +33,7 @@ export class RecipesService {
   }
 
   async getRecipeById(userId: number, recipeId: number) {
-    return await this.prismaService.recipe.findFirst({
+    return await this.prismaService.recipe.findUnique({
       where: {
         id: recipeId,
         userId,
@@ -66,8 +60,7 @@ export class RecipesService {
       },
     });
 
-    if (!recipe || recipe.userId !== userId)
-      throw new ForbiddenException('Access to recipe resources is forbidden.');
+    if (!recipe || recipe.userId !== userId) throw new ForbiddenException('Access to recipe resources is forbidden.');
 
     await this.prismaService.recipe.delete({
       where: {
@@ -80,19 +73,14 @@ export class RecipesService {
     };
   }
 
-  async updateRecipe(
-    userId: number,
-    recipeId: number,
-    recipeDto: EditRecipeDto,
-  ) {
+  async updateRecipe(userId: number, recipeId: number, recipeDto: EditRecipeDto) {
     const recipe = await this.prismaService.recipe.findUnique({
       where: {
         id: recipeId,
       },
     });
 
-    if (!recipe || recipe.userId !== userId)
-      throw new ForbiddenException('Access to recipe resources is forbidden.');
+    if (!recipe || recipe.userId !== userId) throw new ForbiddenException('Access to recipe resources is forbidden.');
 
     return this.prismaService.recipe.update({
       where: {

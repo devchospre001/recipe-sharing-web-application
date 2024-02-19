@@ -22,14 +22,14 @@ export class UsersService {
     return user;
   }
 
-  async getUser(userId: number) {
+  async getLoggedInUser(userId: number) {
     const user = await this.prismaService.user.findUnique({
       where: {
         id: userId,
       },
     });
 
-    delete user.pwdHash; // Maybe when retrieving an user, we can show password for updating purposes.
+    delete user.pwdHash;
 
     return user;
   }
@@ -41,8 +41,7 @@ export class UsersService {
       },
     });
 
-    if (!user || user.id !== userId)
-      throw new ForbiddenException('Access to user resources is forbidden.');
+    if (!user || user.id !== userId) throw new ForbiddenException('Access to user resources is forbidden.');
 
     await this.prismaService.user.delete({
       where: {

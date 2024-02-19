@@ -1,4 +1,4 @@
-// import { useContext } from "react";
-// import { RecipeContext } from "@/context/recipe-provider";
+import { useContext } from "react";
+import { RecipeContext } from "@/context/RecipeProvider";
 
-// export const useRecipe = () => useContext(RecipeContext);
+export const useRecipe = () => useContext(RecipeContext);

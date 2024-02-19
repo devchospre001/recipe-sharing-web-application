@@ -9,8 +9,8 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { ModeToggle } from "@/components/mode-toggle";
-import { NavMenu } from "@/components/nav-menu";
+import { ModeToggle } from "@/components/ModeToggle";
+import { NavMenu } from "@/components/NavMenu";
 
 export function Settings() {
   return (

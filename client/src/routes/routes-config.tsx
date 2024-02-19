@@ -10,6 +10,8 @@ import { useAuth } from "../hooks/useAuth";
 import MyRecipes from "@/pages/MyRecipes";
 import { Settings } from "@/pages/Settings";
 import MyProfile from "@/pages/MyProfile";
+import RecipeContextProvider from "@/context/RecipeProvider";
+import SearchContextProvider from "@/context/SearchProvider";
 
 const Routes = () => {
   const { token } = useAuth();
@@ -21,15 +23,21 @@ const Routes = () => {
       children: [
         {
           path: routePaths.BASE,
-          element: <App />,
-        },
-        {
-          path: routePaths.FEED,
-          element: <App />,
+          element: (
+            <SearchContextProvider>
+              <RecipeContextProvider>
+                <App />
+              </RecipeContextProvider>
+            </SearchContextProvider>
+          ),
         },
         {
           path: routePaths.MY_PROFILE,
-          element: <MyProfile />,
+          element: (
+            <RecipeContextProvider>
+              <MyProfile />
+            </RecipeContextProvider>
+          ),
         },
         {
           path: routePaths.SETTINGS,
@@ -37,7 +45,13 @@ const Routes = () => {
         },
         {
           path: routePaths.MY_RECIPES,
-          element: <MyRecipes />,
+          element: (
+            <SearchContextProvider>
+              <RecipeContextProvider>
+                <MyRecipes />
+              </RecipeContextProvider>
+            </SearchContextProvider>
+          ),
         },
       ],
     },

@@ -5,7 +5,6 @@ const routePaths = {
   MY_RECIPES: "/my-recipes",
   SETTINGS: "/settings",
   MY_PROFILE: "/my-profile",
-  FEED: "/feed",
   UNKNOWN: "*",
 };
 

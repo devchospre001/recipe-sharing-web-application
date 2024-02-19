@@ -1,79 +1,91 @@
 import { useEffect, useState } from "react";
-import axios, { AxiosError } from "axios";
 
 import Spinner from "@/components/ui/spinner";
-import { CardFeed } from "@/components/card-feed";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { useAuth } from "@/hooks/useAuth";
+import { CardFeed } from "@/components/CardFeed";
 import { TRecipe } from "@/types";
-import { endpoints } from "@/api/config";
-import { Button } from "@/components/ui/button";
-import { toast } from "@/components/ui/use-toast";
 import { Toaster } from "@/components/ui/toaster";
+import { useSearch } from "@/hooks/useSearch";
+import { useRecipe } from "@/hooks/useRecipe";
+
+export const options = ["Title", "Category", "Cuisine"];
 
 const Feed = () => {
-  const [loading, setLoading] = useState(true);
-  const [recipes, setRecipes] = useState<TRecipe[]>([]);
-  const [error, setError] = useState<AxiosError>();
-  const { token } = useAuth();
+  const { error, loading, recipes, getAllRecipes } = useRecipe();
+  const [filteredRecipes, setFilteredRecipes] = useState<TRecipe[]>(recipes);
+  const { inputText, handleSearchData } = useSearch();
 
   useEffect(() => {
-    axios
-      .get<TRecipe[]>(endpoints.FETCH_ALL_RECIPES, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((response) => {
-        setRecipes(response.data);
-        setLoading(false);
-      })
-      .catch((_error) => {
-        const axiosError = _error as AxiosError;
-        setError(axiosError);
-        setLoading(false);
-        toast({
-          title: `Error ${error?.response?.status}`,
-          description: error?.message,
-          variant: "destructive",
-        });
-      });
+    getAllRecipes();
   }, []);
 
+  useEffect(() => {
+    const filteredRecipes = handleSearchData(recipes, options);
+    setFilteredRecipes(filteredRecipes);
+  }, [inputText]);
+
   return (
-    <Card className="grid grid-rows-1 items-center justify-center m-auto w-[50%]">
-      <CardHeader className="flex items-center">~ Feed ~</CardHeader>
-      <CardContent>
-        {!loading ? (
-          recipes.length > 0 ? (
-            recipes.map((recipe, i) => (
-              <CardFeed
-                key={(Math.random() * i + 1024) ** 2}
-                title={recipe.title}
-                category={recipe.category}
-                cuisine={recipe.cuisine}
-                instructions={recipe.instructions}
-                keywords={recipe.keywords}
-                image={recipe.image}
-              />
-            ))
-          ) : recipes.length === 0 && !error ? (
-            <Button variant="ghost">
-              There are no recipes published at the moment
-            </Button>
+    <>
+      <div>
+        <h1 className="text-center text-2xl m-4">~ Feed ~</h1>
+        {!inputText ? (
+          !loading ? (
+            recipes.length > 0 ? (
+              <div className="flex flex-wrap">
+                {recipes.map((recipe, i) => (
+                  <CardFeed
+                    key={(Math.random() * i + 1024) ** 2}
+                    title={recipe.title}
+                    category={recipe.category}
+                    cuisine={recipe.cuisine}
+                    instructions={recipe.instructions}
+                    keywords={recipe.keywords}
+                    image={recipe.image}
+                    userId={recipe.userId}
+                  />
+                ))}
+              </div>
+            ) : recipes.length === 0 && !error ? (
+              <>There are no recipes published at this moment</>
+            ) : error ? (
+              <div>
+                There are no recipes at this moment
+                <Toaster />
+              </div>
+            ) : null
+          ) : (
+            <Spinner />
+          )
+        ) : !loading ? (
+          filteredRecipes.length > 0 ? (
+            <div className="flex flex-wrap">
+              {filteredRecipes.map((recipe, i) => (
+                <CardFeed
+                  key={(Math.random() * i + 1024) ** 2}
+                  title={recipe.title}
+                  category={recipe.category}
+                  cuisine={recipe.cuisine}
+                  instructions={recipe.instructions}
+                  keywords={recipe.keywords}
+                  image={recipe.image}
+                  userId={recipe.userId}
+                />
+              ))}
+            </div>
+          ) : filteredRecipes.length === 0 && !error ? (
+            <h1 className="text-center">
+              There are no recipes with that keyword
+            </h1>
           ) : error ? (
-            <div>
-              <Button className="w-[40rem]" variant="destructive">
-                Error while fetching recipes
-              </Button>
+            <div className="text-center">
+              There are no recipes at this moment
               <Toaster />
             </div>
           ) : null
         ) : (
           <Spinner />
         )}
-      </CardContent>
-    </Card>
+      </div>
+    </>
   );
 };
 

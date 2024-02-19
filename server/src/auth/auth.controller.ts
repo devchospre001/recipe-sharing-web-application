@@ -1,8 +1,8 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 
 import { AuthService } from './auth.service';
 import { SigninUserDto, SignupUserDto } from './dto';
-import { JwtAuthGuard } from './guards';
+// import { RefreshTokenGuard } from './guards/refresh-token.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -18,9 +18,9 @@ export class AuthController {
     return this.authService.signin(userDto);
   }
 
-  @UseGuards(JwtAuthGuard)
-  @Get('/welcome')
-  dashboard() {
-    return "You're logged in!";
-  }
+  // @UseGuards(RefreshTokenGuard)
+  // @Post('refresh')
+  // async refreshToken(@Request() user) {
+  //   return this.authService.refreshToken(user);
+  // } TODO: Reimplement this.
 }

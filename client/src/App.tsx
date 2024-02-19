@@ -1,11 +1,13 @@
-import { NavMenu } from "./components/nav-menu";
+import { NavMenu } from "./components/NavMenu";
 import Feed from "./pages/Feed";
 
-export const App = () => (
-  <>
-    <NavMenu />
-    <Feed />
-  </>
-);
+export const App = () => {
+  return (
+    <>
+      <NavMenu />
+      <Feed />
+    </>
+  );
+};
 
 export default App;

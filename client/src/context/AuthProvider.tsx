@@ -17,7 +17,6 @@ const AuthContextProvider = ({ children }: TChildProps) => {
     if (token) {
       axios.defaults.headers.common["Authorization"] = "Bearer " + token;
       localStorage.setItem("token", token);
-      // we should add refresh token and expiry token so whenever it expires we can log user out.
     } else {
       delete axios.defaults.headers.common["Authorization"];
       localStorage.removeItem("token");
