@@ -1,14 +1,5 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  ParseIntPipe,
-  Patch,
-  Post,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 import { RecipesService } from './recipes.service';
 import { CreateRecipeDto, EditRecipeDto } from './dto';
@@ -21,40 +12,39 @@ export class RecipesController {
   constructor(private recipesService: RecipesService) {}
 
   @Get()
-  async getRecipes(@GetUser('id') userId: number) {
-    return this.recipesService.getRecipes(userId);
+  async getRecipesForAllUsers() {
+    return await this.recipesService.getRecipesForAllUsers();
+  }
+
+  @Get('my-recipes')
+  async getRecipesForUser(@GetUser('id') userId: number) {
+    return await this.recipesService.getRecipesForUser(userId);
   }
 
   @Get('recipe/:id')
-  getRecipeById(
-    @GetUser('id') userId: number,
-    @Param('id', ParseIntPipe) recipeId: number,
-  ) {
-    return this.recipesService.getRecipeById(userId, recipeId);
+  async getRecipeById(@GetUser('id') @Param('id', ParseIntPipe) recipeId: number) {
+    return await this.recipesService.getRecipeById(recipeId);
   }
 
   @Post('recipe/new')
-  createRecipe(
-    @GetUser('id') userId: number,
-    @Body() recipeDto: CreateRecipeDto,
-  ) {
-    return this.recipesService.createRecipe(userId, recipeDto);
+  @UseInterceptors(FileInterceptor('image'))
+  async createRecipe(@GetUser('id') userId: number, @Body() recipeDto: CreateRecipeDto, @UploadedFile() file: Express.Multer.File) {
+    return await this.recipesService.createRecipe(userId, recipeDto, file);
   }
 
   @Patch('recipe/:id')
-  updateRecipe(
+  @UseInterceptors(FileInterceptor('image'))
+  async updateRecipe(
     @GetUser('id') userId: number,
     @Param('id', ParseIntPipe) recipeId: number,
     @Body() recipeDto: EditRecipeDto,
+    @UploadedFile() file?: Express.Multer.File,
   ) {
-    return this.recipesService.updateRecipe(userId, recipeId, recipeDto);
+    return await this.recipesService.updateRecipe(userId, recipeId, recipeDto, file);
   }
 
   @Delete('recipe/:id')
-  deleteRecipe(
-    @GetUser('id') userId: number,
-    @Param('id', ParseIntPipe) recipeId: number,
-  ) {
-    return this.recipesService.deleteRecipeById(userId, recipeId);
+  async deleteRecipe(@GetUser('id') userId: number, @Param('id', ParseIntPipe) recipeId: number) {
+    return await this.recipesService.deleteRecipeById(userId, recipeId);
   }
 }

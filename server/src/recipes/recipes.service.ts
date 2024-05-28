@@ -2,16 +2,21 @@ import { ForbiddenException, Injectable } from '@nestjs/common';
 
 import { CreateRecipeDto, EditRecipeDto } from './dto';
 import { PrismaService } from '../prisma/prisma.service';
-
-// TODO: Add assertions for every method in RecipesService class.
+import { AWSService } from '../aws/aws.service';
 
 @Injectable()
 export class RecipesService {
-  constructor(private prismaService: PrismaService) {}
+  constructor(
+    private awsService: AWSService,
+    private prismaService: PrismaService,
+  ) {}
 
-  async createRecipe(userId: number, recipeDto: CreateRecipeDto) {
-    const { title, category, cuisine, instructions, keywords, image } =
-      recipeDto;
+  async createRecipe(userId: number, recipeDto: CreateRecipeDto, file: Express.Multer.File) {
+    const { title, category, cuisine, instructions, keywords } = recipeDto;
+
+    const image = await this.awsService.uploadFile(file);
+    const imageLocation = image.Location;
+
     const recipe = await this.prismaService.recipe.create({
       data: {
         title,
@@ -19,7 +24,7 @@ export class RecipesService {
         cuisine,
         instructions,
         keywords,
-        image,
+        image: imageLocation ?? null,
         userId,
       },
     });
@@ -27,16 +32,19 @@ export class RecipesService {
     return recipe;
   }
 
-  async getRecipeById(userId: number, recipeId: number) {
-    return await this.prismaService.recipe.findFirst({
+  async getRecipeById(recipeId: number) {
+    return await this.prismaService.recipe.findUniqueOrThrow({
       where: {
         id: recipeId,
-        userId,
       },
     });
   }
 
-  async getRecipes(userId: number) {
+  async getRecipesForAllUsers() {
+    return await this.prismaService.recipe.findMany();
+  }
+
+  async getRecipesForUser(userId: number) {
     return await this.prismaService.recipe.findMany({
       where: {
         userId,
@@ -51,8 +59,7 @@ export class RecipesService {
       },
     });
 
-    if (!recipe || recipe.userId !== userId)
-      throw new ForbiddenException('Access to recipe resources is forbidden.');
+    if (!recipe || recipe.userId !== userId) throw new ForbiddenException('Access to recipe resources is forbidden.');
 
     await this.prismaService.recipe.delete({
       where: {
@@ -65,26 +72,34 @@ export class RecipesService {
     };
   }
 
-  async updateRecipe(
-    userId: number,
-    recipeId: number,
-    recipeDto: EditRecipeDto,
-  ) {
+  async updateRecipe(userId: number, recipeId: number, recipeDto: EditRecipeDto, file?: Express.Multer.File) {
     const recipe = await this.prismaService.recipe.findUnique({
       where: {
         id: recipeId,
       },
     });
 
-    if (!recipe || recipe.userId !== userId)
-      throw new ForbiddenException('Access to recipe resources is forbidden.');
+    let image;
+    let imageLocation;
 
-    return this.prismaService.recipe.update({
+    if (file) {
+      image = await this.awsService.uploadFile(file);
+      imageLocation = image.Location;
+    }
+
+    if (!recipe || recipe.userId !== userId) throw new ForbiddenException('Access to recipe resources is forbidden.');
+
+    return await this.prismaService.recipe.update({
       where: {
         id: recipeId,
       },
       data: {
-        ...recipeDto,
+        title: recipeDto.title || recipe.title,
+        category: recipeDto.category || recipe.category,
+        cuisine: recipeDto.cuisine || recipe.cuisine,
+        instructions: recipeDto.instructions || recipe.instructions,
+        keywords: recipeDto.instructions || recipe.instructions,
+        image: imageLocation || recipe.image,
       },
     });
   }

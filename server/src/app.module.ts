@@ -5,6 +5,7 @@ import { AuthModule } from './auth/auth.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { UsersModule } from './users/users.module';
 import { RecipeModule } from './recipes/recipes.module';
+import { AWSModule } from './aws/aws.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { RecipeModule } from './recipes/recipes.module';
     UsersModule,
     RecipeModule,
     PrismaModule,
+    AWSModule,
   ],
   controllers: [],
   providers: [],

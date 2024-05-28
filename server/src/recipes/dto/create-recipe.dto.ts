@@ -1,4 +1,4 @@
-import { IsArray, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateRecipeDto {
   @IsString()
@@ -16,9 +16,9 @@ export class CreateRecipeDto {
   @IsNotEmpty()
   instructions: string;
 
-  @IsArray()
+  @IsString()
   @IsNotEmpty()
-  keywords: Array<string>;
+  keywords: string;
 
   @IsString()
   @IsOptional()

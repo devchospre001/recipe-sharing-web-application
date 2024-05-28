@@ -33,7 +33,7 @@ model Recipe {
   category     String
   cuisine      String
   instructions String
-  keywords     String[]
+  keywords     String
   image        String? // This will come from AWS S3
 
   userId Int
