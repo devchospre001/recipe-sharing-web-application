@@ -43,11 +43,9 @@ export function Signin() {
         duration: 3000,
       });
 
-      console.log(data);
-
       setTimeout(() => {
         setTokenKey(data.accessToken);
-        navigate("/", { replace: true });
+        navigate("/", { replace: false });
         toast({
           title: "Successful",
           description: "Logged in successfully",

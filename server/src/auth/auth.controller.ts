@@ -2,7 +2,6 @@ import { Body, Controller, Post } from '@nestjs/common';
 
 import { AuthService } from './auth.service';
 import { SigninUserDto, SignupUserDto } from './dto';
-// import { RefreshTokenGuard } from './guards/refresh-token.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -17,10 +16,4 @@ export class AuthController {
   signin(@Body() userDto: SigninUserDto) {
     return this.authService.signin(userDto);
   }
-
-  // @UseGuards(RefreshTokenGuard)
-  // @Post('refresh')
-  // async refreshToken(@Request() user) {
-  //   return this.authService.refreshToken(user);
-  // } TODO: Reimplement this.
 }

@@ -3,6 +3,11 @@ import { ChangeEvent, createContext, useState } from "react";
 import { TChildProps, TRecipe } from "@/types";
 import { options } from "@/pages/Feed";
 
+export enum Action {
+  CATEGORY = "Category",
+  CUISINE = "Cuisine",
+}
+
 type TSearchContext = {
   inputText: string;
   checkedTag: number | null;
@@ -32,19 +37,13 @@ const SearchContextProvider = ({ children }: TChildProps) => {
 
   const handleSearchData = (arr: TRecipe[], choice: typeof options) => {
     const filteredSearchData = arr.filter((recipe) => {
-      if (!choice[checkedTag!] || choice[checkedTag!] === "Title") {
-        const titleMatch = recipe.title.toLowerCase().includes(inputText);
-        return titleMatch;
-      }
-
-      if (choice[checkedTag!] === "Category") {
-        const categoryMatch = recipe.category.toLowerCase().includes(inputText);
-        return categoryMatch;
-      }
-
-      if (choice[checkedTag!] === "Cuisine") {
-        const cuisineMatch = recipe.cuisine.toLowerCase().includes(inputText);
-        return cuisineMatch;
+      switch (choice[checkedTag!]) {
+        case Action.CATEGORY:
+          return recipe.category.toLowerCase().startsWith(inputText);
+        case Action.CUISINE:
+          return recipe.cuisine.toLowerCase().startsWith(inputText);
+        default:
+          return recipe.title.toLowerCase().startsWith(inputText);
       }
     });
 

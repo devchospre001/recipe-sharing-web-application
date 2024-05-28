@@ -1,8 +1,9 @@
 import * as React from "react";
-import { jwtDecode } from "jwt-decode";
-import { Filter, MenuIcon, SquareUser } from "lucide-react";
+import { Crown, Filter, MenuIcon, Search, SquareUser } from "lucide-react";
 import { Label } from "@radix-ui/react-label";
 
+import RecipeDrawer from "./modals/RecipeDrawer";
+import MenuItem from "./MobileMenu";
 import { cn } from "@/utils";
 import {
   NavigationMenu,
@@ -14,14 +15,12 @@ import {
 } from "@/components/ui/navigation-menu";
 import { useAuth } from "@/hooks/useAuth";
 import { Input } from "./ui/input";
-import { Button } from "./ui/button";
-import { Drawer, DrawerTrigger } from "./ui/drawer";
-import RecipeDrawer from "./modals/RecipeDrawer";
 import { useSearch } from "@/hooks/useSearch";
-import { useNavigate } from "react-router-dom";
 import { Switch } from "./ui/switch";
 import { options } from "@/pages/Feed";
 import { ModeToggle } from "./ModeToggle";
+import { Button } from "./ui/button";
+import { useUser } from "@/hooks/useUser";
 
 const components: {
   title: string;
@@ -29,38 +28,22 @@ const components: {
   description: string;
 }[] = [
   {
-    title: "My recipes",
-    href: "/my-recipes",
-    description:
-      "A modal dialog that interrupts the user with important content and expects a response.",
-  },
-  {
     title: "My profile",
     href: "/my-profile",
-    description: "Visually or semantically separates content.",
-  },
-  {
-    title: "Settings",
-    href: "/settings",
-    description:
-      "A set of layered sections of content—known as tab panels—that are displayed one at a time.",
+    description: 'View "Profile" link and adjust your profile settings',
   },
 ];
 
 export function NavMenu() {
-  const { token, setTokenKey } = useAuth();
+  const { user } = useUser();
+  const { setTokenKey } = useAuth();
   const { handleSearchInput, checkedTag, handleTagCheck } = useSearch();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const user = jwtDecode(token!) as any;
-  const navigate = useNavigate();
-
-  const navigateToFeed = () => {
-    navigate("/", { replace: true });
-  };
+  const [isOpenMenu, setIsOpenMenu] = React.useState(false);
+  const [isOpenSearch, setIsOpenSearch] = React.useState(false);
 
   return (
     <>
-      <div className="flex items-center justify-center">
+      <div className="hidden lg:flex items-center justify-center max-w-[100%]">
         <NavigationMenu>
           <NavigationMenuList>
             <NavigationMenuItem className="flex items-center justify-center">
@@ -80,30 +63,36 @@ export function NavMenu() {
                   <li className="row-span-3">
                     <NavigationMenuLink asChild>
                       <a
-                        className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
-                        href="/"
+                        className="flex h-full w-[150px] select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
+                        href="/my-profile"
                       >
                         <div className="mb-2 mt-4 text-lg font-medium">
-                          {user.username}
+                          <Crown color="gold" size={"64px"} />
                         </div>
                         <p className="text-sm leading-tight text-muted-foreground">
-                          Welcome to Recipes, {user.username.toUpperCase()}
+                          Welcome{" "}
+                          <strong>
+                            {!user.firstName ? user.username : user.firstName}!
+                          </strong>
                         </p>
                       </a>
                     </NavigationMenuLink>
                   </li>
-                  <Drawer>
-                    <DrawerTrigger asChild>
-                      <Button onClick={navigateToFeed} variant="outline">
-                        Recipe Feed
-                      </Button>
-                    </DrawerTrigger>
-                  </Drawer>
-                  <RecipeDrawer
-                    buttonTitle="Publish a Recipe"
-                    drawerDescription="Publish a Recipe"
-                    modalType="Publish"
-                  />
+                  <ListItem
+                    key={Math.random() ** 2 * 1024}
+                    title="Feed"
+                    href="/"
+                  >
+                    By clicking on "Feed" link you can see all recipes from
+                    users
+                  </ListItem>
+                  <ListItem
+                    key={Math.random() ** 2 * 1024}
+                    title="My Recipes"
+                    href="/my-recipes"
+                  >
+                    By viewing "My Recipes" link you can see all of your recipes
+                  </ListItem>
                 </ul>
               </NavigationMenuContent>
             </NavigationMenuItem>
@@ -129,7 +118,7 @@ export function NavMenu() {
                     href="/"
                     onClick={() => setTokenKey("")}
                   >
-                    Log out from this account in just one click
+                    Log out from current session
                   </ListItem>
                 </ul>
               </NavigationMenuContent>
@@ -165,6 +154,91 @@ export function NavMenu() {
             </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>
+        <div>
+          <RecipeDrawer
+            buttonTitle="Publish a Recipe"
+            modalType="Publish"
+            drawerDescription="Publish a Recipe"
+          />
+        </div>
+      </div>
+      <div className="flex items-center m-5 lg:hidden">
+        <Button onClick={() => setIsOpenMenu(!isOpenMenu)} variant={"ghost"}>
+          <MenuIcon />
+        </Button>
+        <div className="relative">
+          <ul
+            className={
+              !isOpenMenu ? "hidden" : "flex flex-col w-max absolute z-3"
+            }
+          >
+            <MenuItem tag={<ModeToggle />} />
+            <MenuItem
+              tag={
+                <Button className="w-full" variant={"outline"}>
+                  <a href="/">Feed</a>
+                </Button>
+              }
+            />
+            <MenuItem
+              tag={
+                <Button className="w-full" variant={"outline"}>
+                  <a href="/my-recipes">My Recipes</a>
+                </Button>
+              }
+            />
+            <MenuItem
+              tag={
+                <Button className="w-full" variant={"outline"}>
+                  <a href="/my-profile">Profile</a>
+                </Button>
+              }
+            />
+            <MenuItem
+              tag={
+                <RecipeDrawer
+                  buttonTitle="Publish a Recipe"
+                  drawerDescription="Publish a Recipe"
+                  modalType="Publish"
+                />
+              }
+            />
+            <MenuItem
+              tag={
+                <Button className="w-full" variant={"outline"}>
+                  <a href="/" onClick={() => setTokenKey("")}>
+                    Logout
+                  </a>
+                </Button>
+              }
+            />
+          </ul>
+        </div>
+        <Button
+          onClick={() => setIsOpenSearch(!isOpenSearch)}
+          variant={"ghost"}
+          className="mr-5"
+        >
+          <Search />
+        </Button>
+        <Input
+          type="search"
+          className={
+            isOpenSearch
+              ? "flex items-center justify-center w-[100%] sm:hidden"
+              : "hidden"
+          }
+          onChange={handleSearchInput}
+        />
+        <Input
+          type="search"
+          className={
+            isOpenSearch
+              ? "hidden md:flex items-center justify-center w-[100%]"
+              : "hidden"
+          }
+          onChange={handleSearchInput}
+        />
       </div>
     </>
   );

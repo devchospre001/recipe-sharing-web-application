@@ -1,33 +1,34 @@
-import { Drawer as DrawerPrimitive } from "vaul";
-import { useRef } from "react";
+import { FormEvent, useRef } from "react";
 
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "../ui/button";
 import { useRecipe } from "@/hooks/useRecipe";
+import { useNavigate } from "react-router-dom";
 
-export function CreateRecipeCard() {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const formRef = useRef<HTMLFormElement | any>();
+// eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
+export function CreateRecipeCard(props: any) {
+  const formRef = useRef<HTMLFormElement | null>(null);
+  const navigate = useNavigate();
   const { publishRecipe } = useRecipe();
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleSubmit = async (event: any) => {
+  const handleSubmit = async (
+    event: FormEvent<HTMLFormElement | HTMLButtonElement>
+  ) => {
     event.preventDefault();
-    const formData = new FormData(formRef.current);
+    const formData = new FormData(formRef.current!);
 
     try {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       await publishRecipe(formData);
+      navigate("/", { replace: false });
     } catch (error) {
-      console.log(error);
+      console.error("There has been an error while publishing recipe.");
     }
   };
-  const DrawerClose = DrawerPrimitive.Close;
 
   return (
-    <Card className="w-[350px]">
+    <Card className="flex flex-col items-center justify-center">
       <CardHeader></CardHeader>
       <CardContent>
         <form ref={formRef} onSubmit={handleSubmit}>
@@ -46,7 +47,6 @@ export function CreateRecipeCard() {
                 name="category"
                 id="category"
                 placeholder="Category of your recipe"
-                defaultValue="Uncategorized"
               />
             </div>
             <div className="flex flex-col space-y-1.5">
@@ -73,13 +73,15 @@ export function CreateRecipeCard() {
               <Label htmlFor="image">Image (Optional)</Label>
               <Input name="image" id="image" type="file" />
             </div>
+            <div className="border border-y-[1px] border-gray w-[100%] mb-4" />
             <div className="flex flex-col items-center justify-center grow">
-              <Button onSubmit={handleSubmit} variant={"secondary"}>
+              <Button
+                className="w-[100%]"
+                onSubmit={handleSubmit}
+                variant={"secondary"}
+              >
                 Publish Recipe
               </Button>
-              <DrawerClose>
-                <Button variant="outline">Cancel</Button>
-              </DrawerClose>
             </div>
           </div>
         </form>

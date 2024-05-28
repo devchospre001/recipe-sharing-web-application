@@ -2,12 +2,18 @@ import { TRecipe } from "@/types";
 import { Button } from "./ui/button";
 import { SquareDot } from "lucide-react";
 import { useRecipe } from "@/hooks/useRecipe";
+import RecipeDrawer from "./modals/RecipeDrawer";
 
 export function CardFeed(props: TRecipe) {
-  const { userId } = useRecipe();
+  const { userId, deleteRecipe, navigate } = useRecipe();
+
+  const navigateToRecipe = (id: number) => {
+    navigate(`/recipe/${id}`, { replace: false });
+  };
+
   return (
-    <div className="flex basis-1/3 items-center justify-center">
-      <div className="border flex flex-col items-center justify-center w-[400px] m-4 p-4">
+    <div className="md:grid place-items-center">
+      <div className="border flex flex-col items-center justify-center min-h-[600px] w-[400px] md:m-4 p-4">
         <img
           className="object-cover w-[100%] h-auto max-h-[250px] mb-4"
           alt={props.title}
@@ -33,11 +39,28 @@ export function CardFeed(props: TRecipe) {
             </p>
           </div>
           <div className="flex flex-col items-center justify-center">
-            <Button variant={"link"}>View recipe</Button>
+            <Button
+              onClick={() => navigateToRecipe(props.id!)}
+              variant={"link"}
+            >
+              View recipe
+            </Button>
             {props.userId === userId ? (
               <>
                 <div className="border border-y-[1px] border-gray w-[100%] mb-4" />
-                <Button variant={"destructive"}>Remove recipe</Button>
+                <RecipeDrawer
+                  buttonTitle="Update a Recipe"
+                  drawerDescription="Update a Recipe"
+                  modalType="Update"
+                  recipeId={props.id}
+                />
+                <Button
+                  onClick={() => deleteRecipe(props.id!)}
+                  variant={"destructive"}
+                  className="w-[100%] m-1"
+                >
+                  Remove recipe
+                </Button>
               </>
             ) : null}
           </div>

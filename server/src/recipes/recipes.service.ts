@@ -32,11 +32,10 @@ export class RecipesService {
     return recipe;
   }
 
-  async getRecipeById(userId: number, recipeId: number) {
-    return await this.prismaService.recipe.findUnique({
+  async getRecipeById(recipeId: number) {
+    return await this.prismaService.recipe.findUniqueOrThrow({
       where: {
         id: recipeId,
-        userId,
       },
     });
   }
@@ -73,21 +72,34 @@ export class RecipesService {
     };
   }
 
-  async updateRecipe(userId: number, recipeId: number, recipeDto: EditRecipeDto) {
+  async updateRecipe(userId: number, recipeId: number, recipeDto: EditRecipeDto, file?: Express.Multer.File) {
     const recipe = await this.prismaService.recipe.findUnique({
       where: {
         id: recipeId,
       },
     });
 
+    let image;
+    let imageLocation;
+
+    if (file) {
+      image = await this.awsService.uploadFile(file);
+      imageLocation = image.Location;
+    }
+
     if (!recipe || recipe.userId !== userId) throw new ForbiddenException('Access to recipe resources is forbidden.');
 
-    return this.prismaService.recipe.update({
+    return await this.prismaService.recipe.update({
       where: {
         id: recipeId,
       },
       data: {
-        ...recipeDto,
+        title: recipeDto.title || recipe.title,
+        category: recipeDto.category || recipe.category,
+        cuisine: recipeDto.cuisine || recipe.cuisine,
+        instructions: recipeDto.instructions || recipe.instructions,
+        keywords: recipeDto.instructions || recipe.instructions,
+        image: imageLocation || recipe.image,
       },
     });
   }

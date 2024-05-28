@@ -16,7 +16,7 @@ const RecipeDrawer = (props: TRecipeDrawer) => {
   return (
     <RecipeContextProvider>
       <Drawer>
-        <DrawerTrigger asChild>
+        <DrawerTrigger className="w-full" asChild>
           <Button variant="outline">{props.buttonTitle}</Button>
         </DrawerTrigger>
         <DrawerContent>
@@ -28,7 +28,7 @@ const RecipeDrawer = (props: TRecipeDrawer) => {
             {props.modalType === "Publish" ? (
               <CreateRecipeCard />
             ) : (
-              <UpdateRecipeCard />
+              <UpdateRecipeCard recipeId={props.recipeId} />
             )}
           </div>
         </DrawerContent>

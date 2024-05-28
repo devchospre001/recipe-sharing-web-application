@@ -8,5 +8,5 @@ export class EditUserDto {
   @IsString()
   @IsOptional()
   firstName?: string;
-  lastName?: string; // test this
+  lastName?: string;
 }

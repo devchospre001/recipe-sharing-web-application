@@ -6,6 +6,7 @@ import { endpoints } from "@/api/config";
 import { toast } from "@/components/ui/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { jwtDecode } from "jwt-decode";
+import { useNavigate } from "react-router-dom";
 
 export const RecipeContext = createContext<TRecipeContext>(
   {} as TRecipeContext
@@ -16,19 +17,20 @@ const RecipeContextProvider = ({ children }: TChildProps) => {
   const [recipes, setRecipes] = useState<TRecipe[]>([]);
   const [myRecipes, setMyRecipes] = useState<TRecipe[]>([]);
   const [recipe, setRecipe] = useState<TRecipe>({} as TRecipe);
+  const [specificRecipe, setSpecificRecipe] = useState<TRecipe>({} as TRecipe);
   const [error, setError] = useState<AxiosError>();
   const [loading, setLoading] = useState(true);
-  const { token } = useAuth();
   const [userId, setUserId] = useState<string | undefined | null>(null);
+  const { token } = useAuth();
   const authToken = {
     headers: {
       Authorization: "Bearer " + token,
     },
   };
+  const navigate = useNavigate();
 
   const getAllRecipes = async () => {
     try {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const response = await axios.get<TRecipe[]>(
         endpoints.FETCH_ALL_RECIPES,
         authToken
@@ -71,34 +73,74 @@ const RecipeContextProvider = ({ children }: TChildProps) => {
     }
   };
 
-  const publishRecipe = async (formData: FormData) => {
+  const getRecipeById = async (recipeId: number) => {
     try {
-      await axios.post<TRecipe>(endpoints.PUBLISH_RECIPE, formData, authToken);
-    } catch (error) {
-      console.error(error);
+      const response = await axios.get<TRecipe>(
+        `${endpoints.FETCH_RECIPE_BY_ID}/${recipeId}`,
+        authToken
+      );
+
+      const data = response.data;
+
+      setSpecificRecipe(data);
+    } catch (_error) {
+      const axiosError = _error as AxiosError;
+      setError(axiosError);
+      toast({
+        title: `Error ${error?.response?.status}`,
+        description: error?.message,
+        variant: "destructive",
+      });
     }
   };
 
-  const updateRecipe = async (recipe: TUpdateRecipe, recipeId: number) => {
+  const publishRecipe = async (formData: FormData) => {
+    try {
+      await axios.post<TRecipe>(endpoints.PUBLISH_RECIPE, formData, authToken);
+    } catch (_error) {
+      const axiosError = _error as AxiosError;
+      setError(axiosError);
+      toast({
+        title: `Error ${error?.response?.status}`,
+        description: error?.message,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const updateRecipe = async (data: FormData, recipeId: number) => {
     try {
       await axios.patch<TUpdateRecipe>(
-        endpoints.UPDATE_RECIPE + `/${recipeId}`,
-        recipe,
+        `${endpoints.UPDATE_RECIPE}/${recipeId}`,
+        data,
         authToken
       );
-    } catch (error) {
-      console.log(error);
+    } catch (_error) {
+      const axiosError = _error as AxiosError;
+      setError(axiosError);
+      toast({
+        title: `Error ${error?.response?.status}`,
+        description: error?.message,
+        variant: "destructive",
+      });
     }
   };
 
   const deleteRecipe = async (recipeId: number) => {
     try {
       await axios.delete<number>(
-        endpoints.DELETE_RECIPE + `/${recipeId}`,
+        `${endpoints.DELETE_RECIPE}/${recipeId}`,
         authToken
       );
-    } catch (error) {
-      console.log(error);
+      navigate(0);
+    } catch (_error) {
+      const axiosError = _error as AxiosError;
+      setError(axiosError);
+      toast({
+        title: `Error ${error?.response?.status}`,
+        description: error?.message,
+        variant: "destructive",
+      });
     }
   };
 
@@ -113,12 +155,15 @@ const RecipeContextProvider = ({ children }: TChildProps) => {
     recipe,
     recipes,
     myRecipes,
+    specificRecipe,
     userId,
+    navigate,
     setRecipe,
     setRecipes,
     setMyRecipes,
     getAllRecipes,
     getRecipesForUser,
+    getRecipeById,
     publishRecipe,
     updateRecipe,
     deleteRecipe,

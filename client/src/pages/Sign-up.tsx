@@ -45,7 +45,7 @@ export function Signup() {
 
       setTimeout(() => {
         setTokenKey(data.accessToken);
-        navigate("/", { replace: true });
+        navigate("/", { replace: false });
         toast({
           title: "Success",
           description: "You have successfully created an account",

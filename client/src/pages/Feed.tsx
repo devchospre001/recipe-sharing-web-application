@@ -6,8 +6,9 @@ import { TRecipe } from "@/types";
 import { Toaster } from "@/components/ui/toaster";
 import { useSearch } from "@/hooks/useSearch";
 import { useRecipe } from "@/hooks/useRecipe";
+import { Action } from "@/context/SearchProvider";
 
-export const options = ["Title", "Category", "Cuisine"];
+export const options = [Action.CATEGORY, Action.CUISINE];
 
 const Feed = () => {
   const { error, loading, recipes, getAllRecipes } = useRecipe();
@@ -25,12 +26,12 @@ const Feed = () => {
 
   return (
     <>
-      <div>
+      <div className="grid md:place-content-center">
         <h1 className="text-center text-2xl m-4">~ Feed ~</h1>
         {!inputText ? (
           !loading ? (
             recipes.length > 0 ? (
-              <div className="flex flex-wrap">
+              <div className="grid place-content-center sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
                 {recipes.map((recipe, i) => (
                   <CardFeed
                     key={(Math.random() * i + 1024) ** 2}
@@ -41,13 +42,16 @@ const Feed = () => {
                     keywords={recipe.keywords}
                     image={recipe.image}
                     userId={recipe.userId}
+                    id={recipe.id}
                   />
                 ))}
               </div>
             ) : recipes.length === 0 && !error ? (
-              <>There are no recipes published at this moment</>
+              <div className="text-center">
+                There are no recipes published at this moment
+              </div>
             ) : error ? (
-              <div>
+              <div className="text-center">
                 There are no recipes at this moment
                 <Toaster />
               </div>
@@ -57,7 +61,7 @@ const Feed = () => {
           )
         ) : !loading ? (
           filteredRecipes.length > 0 ? (
-            <div className="flex flex-wrap">
+            <div className="grid place-content-center sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
               {filteredRecipes.map((recipe, i) => (
                 <CardFeed
                   key={(Math.random() * i + 1024) ** 2}

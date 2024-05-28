@@ -27,12 +27,12 @@ const MyRecipes = () => {
   return (
     <>
       <NavMenu />
-      <div>
-        <h1 className="text-center text-2xl m-4">~ Feed ~</h1>
+      <div className="grid md:place-content-center">
+        <h1 className="text-center text-2xl m-4">~ My Feed ~</h1>
         {!inputText ? (
           !loading ? (
             myRecipes.length > 0 ? (
-              <div className="flex flex-wrap">
+              <div className="grid place-content-center sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
                 {myRecipes.map((recipe, i) => (
                   <CardFeed
                     key={(Math.random() * i + 1024) ** 2}
@@ -43,13 +43,16 @@ const MyRecipes = () => {
                     keywords={recipe.keywords}
                     image={recipe.image}
                     userId={recipe.userId}
+                    id={recipe.id}
                   />
                 ))}
               </div>
             ) : myRecipes.length === 0 && !error ? (
-              <>There are no recipes published at this moment</>
+              <div className="text-center">
+                There are no recipes published at this moment
+              </div>
             ) : error ? (
-              <div>
+              <div className="text-center">
                 There are no recipes at this moment
                 <Toaster />
               </div>
@@ -59,7 +62,7 @@ const MyRecipes = () => {
           )
         ) : !loading ? (
           myFilteredRecipes.length > 0 ? (
-            <div className="flex flex-wrap">
+            <div className="grid place-content-center sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
               {myFilteredRecipes.map((recipe, i) => (
                 <CardFeed
                   key={(Math.random() * i + 1024) ** 2}
@@ -70,6 +73,7 @@ const MyRecipes = () => {
                   keywords={recipe.keywords}
                   image={recipe.image}
                   userId={recipe.userId}
+                  id={recipe.id}
                 />
               ))}
             </div>

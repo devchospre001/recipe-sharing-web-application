@@ -13,15 +13,9 @@ export class AWSService {
   });
 
   async uploadFile(file) {
-    console.log('devchosprez::: ', file);
     const { originalname } = file;
 
-    return await this.s3_upload(
-      file.buffer,
-      this.AWS_S3_BUCKET,
-      originalname,
-      file.mimetype,
-    );
+    return await this.s3_upload(file.buffer, this.AWS_S3_BUCKET, originalname, file.mimetype);
   }
 
   async s3_upload(file, bucket, name, mimetype) {
@@ -39,10 +33,9 @@ export class AWSService {
 
     try {
       const s3Response = await this.s3.upload(params).promise();
-      console.log('resko: ', s3Response);
       return s3Response;
     } catch (e) {
-      console.log(e);
+      throw new Error(e);
     }
   }
 }

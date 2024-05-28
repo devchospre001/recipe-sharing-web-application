@@ -8,18 +8,22 @@ export class UsersService {
   constructor(private prismaService: PrismaService) {}
 
   async updateUser(userId: number, userDto: EditUserDto) {
-    const user = await this.prismaService.user.update({
+    const user = await this.prismaService.user.findUnique({
       where: {
         id: userId,
       },
-      data: {
-        ...userDto,
-      },
     });
 
-    delete user.pwdHash;
-
-    return user;
+    return await this.prismaService.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        email: userDto.email || user.email,
+        firstName: userDto.firstName || user.firstName,
+        lastName: userDto.lastName || user.lastName,
+      },
+    });
   }
 
   async getLoggedInUser(userId: number) {
