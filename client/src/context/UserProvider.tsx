@@ -4,6 +4,7 @@ import { createContext, useEffect, useState } from "react";
 import { TChildProps, TUserCTX, TUserContext } from "@/types";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "@/components/ui/use-toast";
+import { serverUrl } from "@/api/config";
 
 export const UserContext = createContext<TUserContext>({} as TUserContext);
 
@@ -21,7 +22,10 @@ const UserContextProvider = ({ children }: TChildProps) => {
 
   const getLoggedInUser = async () => {
     try {
-      const response = await axios.get(`/user/currentLoggedInUser`, authToken);
+      const response = await axios.get(
+        `${serverUrl}/user/currentLoggedInUser`,
+        authToken
+      );
 
       setUser(response.data);
     } catch (_error) {
@@ -38,7 +42,7 @@ const UserContextProvider = ({ children }: TChildProps) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const updateUser = async (user: any) => {
     try {
-      await axios.patch(`/user/${user.id}`, user, authToken);
+      await axios.patch(`${serverUrl}/user/${user.id}`, user, authToken);
     } catch (_error) {
       const axiosError = _error as AxiosError;
       setError(axiosError);
