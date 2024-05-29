@@ -1,4 +1,4 @@
-export const serverUrl = process.env.SERVER_URL;
+export const serverUrl = import.meta.env.SERVER_URL;
 
 export const endpoints = {
   FETCH_ALL_RECIPES: `${serverUrl}/recipes`,

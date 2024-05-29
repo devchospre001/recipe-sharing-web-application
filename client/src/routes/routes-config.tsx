@@ -1,4 +1,4 @@
-import { RouterProvider, createHashRouter } from "react-router-dom";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
 
 import routePaths from "@/routes/routes";
 import ProtectedRoute from "@/routes/protected-route";
@@ -89,7 +89,7 @@ const Routes = () => {
     },
   ];
 
-  const router = createHashRouter([
+  const router = createBrowserRouter([
     ...(!token ? routesForNonAuthenticatedUsersOnly : []),
     ...routesForAuthenticatedUsersOnly,
   ]);
