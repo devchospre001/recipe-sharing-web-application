@@ -1,9 +1,5 @@
 daemon off;
-
-pid /app/nginx.pid;
-
-error_log stderr info;
-
+# Heroku dynos have at least 4 cores.
 worker_processes <%= ENV['NGINX_WORKERS'] || 4 %>;
 
 events {
@@ -16,39 +12,39 @@ http {
     gzip on;
     gzip_comp_level 2;
     gzip_min_length 512;
-    gzip_proxied any;
+    gzip_proxied any; # Heroku router sends Via header
 
     server_tokens off;
 
     log_format l2met 'measure#nginx.service=$request_time request_id=$http_x_request_id';
-    access_log /dev/stdout l2met;
+    access_log <%= ENV['NGINX_ACCESS_LOG_PATH'] || 'logs/nginx/access.log' %> l2met;
+    error_log <%= ENV['NGINX_ERROR_LOG_PATH'] || 'logs/nginx/error.log' %>;
 
     include mime.types;
     default_type application/octet-stream;
     sendfile on;
 
-    client_body_timeout <%= ENV['NGINX_CLIENT_BODY_TIMEOUT'] || 5 %>;
+    # Must read the body in 5 seconds.
+    client_body_timeout 5;
+
+    upstream app_server {
+        server unix:/tmp/nginx.socket fail_timeout=0;
+    }
 
     server {
         listen <%= ENV["PORT"] %>;
         server_name _;
         keepalive_timeout 5;
-        client_max_body_size <%= ENV['NGINX_CLIENT_MAX_BODY_SIZE'] || 1 %>M;
+        root /dist;
 
-        ## HTTPS Only
-        if ($http_x_forwarded_proto != "https") {
-            return 301 https://$host$request_uri;
+        location = /index.html {
+            add_header Cache-Control "no-store, no-cache";
+            try_files $uri $uri/ =404;
         }
-
-        ## Document root
-        root /app/dist;
 
         location / {
-            try_files $uri /index.html;  # This line ensures that all unmatched routes are handled by index.html
+            add_header 'Cache-Control' "public, max-age=3600";
+            try_files $uri $uri/ /index.html;
         }
-
-        ## Custom error pages
-        # error_page 404 /404.html;
-        # error_page 500 /500.html;
     }
 }
