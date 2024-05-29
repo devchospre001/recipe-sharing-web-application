@@ -8,7 +8,7 @@ import { useRecipe } from "@/hooks/useRecipe";
 import { useNavigate } from "react-router-dom";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
-export function CreateRecipeCard(props: any) {
+export function CreateRecipeCard() {
   const formRef = useRef<HTMLFormElement | null>(null);
   const navigate = useNavigate();
   const { publishRecipe } = useRecipe();
