@@ -17,6 +17,7 @@ import { ModeToggle } from "@/components/ModeToggle";
 import { useToast } from "@/components/ui/use-toast";
 import { Toaster } from "@/components/ui/toaster";
 import { useAuth } from "@/hooks/useAuth";
+import { serverUrl } from "@/api/config";
 
 export function Signup() {
   const { toast } = useToast();
@@ -32,10 +33,7 @@ export function Signup() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onSubmit = async (userData: FieldValues) => {
     try {
-      const { data } = await axios.post(
-        "http://localhost:3000/auth/sign-up",
-        userData
-      );
+      const { data } = await axios.post(`${serverUrl}/auth/sign-up`, userData);
 
       toast({
         title: "Creation success",

@@ -18,6 +18,7 @@ import { TErrorData } from "@/types";
 import { Toaster } from "@/components/ui/toaster";
 import { useAuth } from "@/hooks/useAuth";
 import { FieldValues, useForm } from "react-hook-form";
+import { serverUrl } from "@/api/config";
 
 export function Signin() {
   const { toast } = useToast();
@@ -32,10 +33,7 @@ export function Signin() {
 
   const onSubmit = async (userData: FieldValues) => {
     try {
-      const { data } = await axios.post(
-        "http://localhost:3000/auth/sign-in",
-        userData
-      );
+      const { data } = await axios.post(`${serverUrl}/auth/sign-in`, userData);
 
       toast({
         title: "Success",
