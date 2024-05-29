@@ -13,7 +13,7 @@
     "prisma:dev:deploy": "npx prisma migrate deploy",
     "database:dev:rm": "docker compose rm recipe-sharing-web-app-db -s -f -v",
     "database:dev:up": "docker compose up recipe-sharing-web-app-db -d",
-    "database:dev:restart": "pnpm run database:dev:rm && pnpm run database:dev:up && sleep 2 && pnpm run prisma:dev:deploy ",
+    "database:dev:restart": "npm run database:dev:rm && npm run database:dev:up && sleep 2 && npm run prisma:dev:deploy ",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "node dist/main.js",
@@ -26,7 +26,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "heroku-postbuild": "pnpm install --dev && pnpm run build"
+    "heroku-postbuild": "npm install --dev && npm run build"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
