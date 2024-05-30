@@ -1,5 +1,6 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+import UserContextProvider from "@/context/UserProvider";
 
 const ProtectedRoute = () => {
   const { token } = useAuth();
@@ -8,7 +9,11 @@ const ProtectedRoute = () => {
     return <Navigate to="/sign-in" />;
   }
 
-  return <Outlet />;
+  return (
+    <UserContextProvider>
+      <Outlet />
+    </UserContextProvider>
+  );
 };
 
 export default ProtectedRoute;

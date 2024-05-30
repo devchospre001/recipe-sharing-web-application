@@ -61,7 +61,7 @@ export function Signup() {
 
   return (
     <div className="flex h-[100vh]">
-      <Card className="m-auto w-[50%]">
+      <Card className="m-auto w-[500px]">
         <CardHeader className="space-y-1">
           <CardTitle className="flex items-center justify-between text-2xl">
             Create an account
@@ -137,6 +137,9 @@ export function Signup() {
               Create account
             </Button>
           </form>
+          <Button variant={"ghost"}>
+            <a href="/sign-in">Already have an account? Sign in!</a>
+          </Button>
         </CardContent>
         <CardFooter>
           <Toaster />

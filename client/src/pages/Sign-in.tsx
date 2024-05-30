@@ -128,6 +128,9 @@ export function Signin() {
               Sign in
             </Button>
           </form>
+          <Button variant={"ghost"}>
+            <a href="/sign-up">Don't have an account? Sign Up!</a>
+          </Button>
         </CardContent>
         <CardFooter>
           <Toaster />
