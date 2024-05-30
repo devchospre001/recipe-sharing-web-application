@@ -11,11 +11,16 @@ export class RecipesService {
     private prismaService: PrismaService,
   ) {}
 
-  async createRecipe(userId: number, recipeDto: CreateRecipeDto, file: Express.Multer.File) {
+  async createRecipe(userId: number, recipeDto: CreateRecipeDto, file?: Express.Multer.File) {
     const { title, category, cuisine, instructions, keywords } = recipeDto;
 
-    const image = await this.awsService.uploadFile(file);
-    const imageLocation = image.Location;
+    let image;
+    let imageLocation;
+
+    if (file) {
+      image = await this.awsService.uploadFile(file);
+      imageLocation = image.Location;
+    }
 
     const recipe = await this.prismaService.recipe.create({
       data: {

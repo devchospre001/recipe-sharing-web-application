@@ -28,7 +28,7 @@ export class RecipesController {
 
   @Post('recipe/new')
   @UseInterceptors(FileInterceptor('image'))
-  async createRecipe(@GetUser('id') userId: number, @Body() recipeDto: CreateRecipeDto, @UploadedFile() file: Express.Multer.File) {
+  async createRecipe(@GetUser('id') userId: number, @Body() recipeDto: CreateRecipeDto, @UploadedFile() file?: Express.Multer.File) {
     return await this.recipesService.createRecipe(userId, recipeDto, file);
   }
 
