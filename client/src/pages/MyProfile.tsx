@@ -33,7 +33,6 @@ const MyProfile = () => {
 
   useEffect(() => {
     getRecipesForUser();
-    console.log(location);
   }, []);
 
   return (

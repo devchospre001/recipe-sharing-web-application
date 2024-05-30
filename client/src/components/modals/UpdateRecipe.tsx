@@ -27,7 +27,6 @@ export function UpdateRecipeCard({ recipeId }: URecipe) {
 
     try {
       await updateRecipe(formData, parseInt(recipeId as string));
-      console.log(formData);
       navigate(`recipe/${recipeId}`, { replace: false });
     } catch (error) {
       console.error("There has been an error while publishing recipe.");

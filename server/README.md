@@ -1,73 +1,84 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
-
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
-
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+# Server Application
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+This is a NestJS application designed to manage a recipe sharing web application. The application uses Prisma as its ORM and PostgreSQL as the database.
+
+## Table of Contents
+
+- [Prerequisites](#prerequisites)
+- [Environment Variables](#environment-variables)
+- [Installation](#installation)
+- [Running the Application](#running-the-application)
+- [Scripts](#scripts)
+- [License](#license)
+
+## Prerequisites
+
+- [Node.js](https://nodejs.org/) v22.2.0
+- [pnpm](https://pnpm.io/) v9.1.3
+- [Docker](https://www.docker.com/)
+
+## Environment Variables
+
+1. JWT_SECRET:
+```JWT_SECRET=your_defined_secret```
+
+2. DATABASE_URL:
+```DATABASE_URL=your_database_url```
+
+3. AWS_S3_ACCESS_KEY_ID:
+```AWS_S3_ACCESS_KEY_ID=your_aws_s3_access_key```
+
+4. AWS_S3_ACCESS_KEY_SECRET:
+```AWS_S3_ACCESS_KEY_SECRET=your_aws_s3_secret_key```
+
+5. PORT:
+```PORT=your_preferred_port```
+
 
 ## Installation
 
+1. Clone the repository:
+```git clone https://github.com/devchospre001/recipe-sharing-web-application.git```
+
+2. Navigate to the cloned repository:
+```cd recipe-sharing-web-application/server```
+
+3. Install required dependencies
+```npm install```
+
+4. Set up the database using Docker Compose:
+```npm run database:dev:up```
+
+5. Apply Prisma migrations:
+```npm run prisma:dev:deploy```
+
+## Running the Application
+
+1. Development mode:
+```npm run start:dev```
+
+2. Production mode:
+```npm run build```
+
+## Scripts
 ```bash
-$ pnpm install
+prisma:dev:deploy # Deploy Prisma migrations.
+database:dev:rm # Remove the Docker container for the database.
+database:dev:up # Start the Docker container for the database.
+database:dev:restart # Restart the Docker container and deploy Prisma migrations.
+build # Build the NestJS application.
+format # Format the code using Prettier.
+start # Start the application.
+start:dev # Start the application in development mode.
+start:debug # Start the application in debug mode.
+start:prod # Start the application in production mode.
+lint # Lint the code using ESLint.
+heroku-postbuild # Install dev dependencies and build for Heroku deployment.
 ```
 
-## Running the app
+# Notes
+- Make sure Docker is running before starting the database.
+- Adjust the POSTGRES_PASSWORD and other environment variables as needed.
 
-```bash
-# development
-$ pnpm run start
-
-# watch mode
-$ pnpm run start:dev
-
-# production mode
-$ pnpm run start:prod
-```
-
-## Test
-
-```bash
-# unit tests
-$ pnpm run test
-
-# e2e tests
-$ pnpm run test:e2e
-
-# test coverage
-$ pnpm run test:cov
-```
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
